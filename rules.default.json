@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "rules": [
+    { "id": "rule3", "enabled": true },
+    { "id": "rule8", "enabled": true },
+    { "id": "rule9", "enabled": true },
+    { "id": "rule4", "enabled": true },
+    { "id": "rule7", "enabled": true },
+    { "id": "rule1", "enabled": true },
+    { "id": "rule6", "enabled": true },
+    { "id": "rule10", "enabled": true },
+    { "id": "rule2", "enabled": true },
+    { "id": "rule5", "enabled": true }
+  ]
+}

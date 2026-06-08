@@ -1,0 +1,69 @@
+dxf:
+  supported_versions:
+    min: "R12"
+    max: "R2018"
+  coordinate_normalization: false
+
+# 実行モードの既定（サブコマンド未指定時に従う）。extract | structurize | run
+execution:
+  mode: run
+
+llm:
+  # トップレベル llm は接続情報＋全体既定。各フェーズで個別指定しない限りこの enabled に従う。
+  enabled: false
+  provider: "openai"       # 利用環境の選択: openai（直接）/ anthropic / azure（Azure AI Foundry）
+  model: "gpt-5-mini"
+  mode: "global"
+  priority: "accuracy"
+  # provider: "azure" のときのみ参照。認証は既定で Azure CLI 認証（az login、APIキー不要）。
+  azure:
+    deployment: ""               # Azure AI Foundry のデプロイ名
+    endpoint: ""                 # 例: https://<resource>.openai.azure.com/
+    api_version: "2024-10-21"
+    auth_method: "azure_cli"     # azure_cli（az login認証、APIキー不要）/ api_key（AZURE_OPENAI_API_KEY を使用）
+
+extraction:
+  text_dimension:
+    duplicate_threshold: 5.0
+  clustering:
+    epsilon: 20.0
+    min_samples: 2
+  rules: []
+
+  # 抽出フェーズのLLM上書き（未指定ならトップレベル llm.enabled を継承）
+  # llm:
+  #   enabled: false
+  # --- 汎用化拡張（すべてオプトイン。未指定なら従来挙動） ---
+  # US1: 多言語キーワード辞書（既定に追加 merge / 置換 replace）
+  # keywords:
+  #   merge_mode: merge
+  #   layer_purpose:
+  #     外形線: [KONTUR, OUTLINE-MAIN]
+  #     寸法線: [BEMASSUNG]
+  #   title_block_labels:
+  #     drawing_number: [Zeichnungsnr, "DWG-NO"]
+  #     scale: [Massstab]
+  # US2: INSERT展開・複数シート
+  # entity_source:
+  #   expand_inserts: false      # true で INSERT を座標変換付き展開
+  #   max_depth: 5
+  #   max_entities: 100000
+  #   process_paperspace: false  # true でペーパースペース/複数シートも処理
+
+# structurize:
+#   # 体系化フェーズのLLM上書き（未指定ならトップレベル llm.enabled を継承）
+#   llm:
+#     enabled: false
+#   # 体系化ルール設定JSONのパス（未指定なら現行ルール構成と同一）。例: rules.default.json
+#   rules_config: null
+#   # US3: 単位・尺度の自動スケール
+#   scale:
+#     auto_scale: false          # true で $INSUNITS/外接範囲からしきい値を自動スケール
+#     base_unit: mm
+#     reference_size: null
+#   # US4: 作図規約プロファイル
+#   profile:
+#     title_block_region: bottom # bottom | top | top_right | bottom_right | auto
+#     title_block_ratio: 0.2
+#     section_symbol_pattern: "^([A-Z])-\\1$|^[A-Z]$"
+#     part_number_style: integer_text  # integer_text | balloon | both
